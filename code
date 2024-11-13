@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Clock with IST Toggle</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #fff;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    .clock {
+      color: #fff;
+      font-size: 48px;
+      font-weight: bold;
+      background-color: #4169E1;
+      padding: 20px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="clock" id="clock">00:00:00</div>
+  <div class="buttons">
+    <button onclick="showLocalTime()">Show Local Time</button>
+    <button onclick="showIST()">Show Indian Time</button>
+  </div>
+
+  <script>
+    let showISTTime = false;
+
+    function updateClock() {
+      const now = new Date();
+
+      if (showISTTime) {
+        // Calculate IST (GMT+5:30)
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istTime = new Date(now.getTime() + istOffset);
+
+        // Convert to 12-hour format with AM/PM
+        let hours = istTime.getUTCHours();
+        const minutes = String(istTime.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(istTime.getUTCSeconds()).padStart(2, '0');
+        
+        let ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12; // Convert to 12-hour format
+        hours = hours ? hours : 12; // Handle midnight (0 should be 12)
+        
+        document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} ${ampm} IST`;
+      } else {
+        // Local time
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} Local`;
+      }
+    }
+
+    function showLocalTime() {
+      showISTTime = false;
+    }
+
+    function showIST() {
+      showISTTime = true;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock(); // Call once to display immediately
+  </script>
+</body>
+</html>
